@@ -1,0 +1,23 @@
+---
+section: 1
+title: Title
+author: Author
+summary: Summary
+output: gihyodown::gihyo_document
+---
+
+```{r}
+print("foo")
+```
+
+図\@ref(fig:iris)はあやめの図です。
+
+```{r iris, fig.cap="foo"}
+plot(iris)
+```
+
+表\@ref(tab:iris)はあやめのデータです。
+
+```{r}
+knitr::kable(head(iris), caption = "(#tab:iris) A table.")
+```
