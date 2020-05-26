@@ -43,9 +43,7 @@ end
 
 function Meta(element)
     if element.section then
-        for k,v in pairs(element["section"]) do
-            section = k
-        end
+        section = element.section[1].text
     end
 
     for k, v in pairs(labels) do
