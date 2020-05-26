@@ -57,8 +57,8 @@ function Meta(element)
 end
 
 function Str(element)
-    element = solve_reference(element, "ref", section)
-    element = solve_reference(element, "hash", section)
+    element = solve_reference(element, "hash", section) -- (#fig:foo)
+    element = solve_reference(element, "ref", section)  -- \@ref(fig:foo)
     return(element)
 end
 
