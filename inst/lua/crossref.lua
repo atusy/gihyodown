@@ -43,7 +43,7 @@ end
 
 function Meta(element)
     if element.section then
-        section = element.section[1].text
+        section = pandoc.utils.stringify(element.section)
     end
 
     for k, v in pairs(labels) do
@@ -61,7 +61,6 @@ function Str(element)
 end
 
 return {
-  { Pandoc = Pandoc },
   { Meta = Meta },
   { Str = Str }
 }
