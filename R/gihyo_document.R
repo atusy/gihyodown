@@ -7,16 +7,23 @@ gihyo_document <- function(
   pandoc_args = NULL,
   ...
 ) {
-  base_format = rmarkdown::md_document(
-    variant = "gfm",
-    md_extensions = c("+ignore_line_breaks", ...),
+  base_format = rmarkdown::github_document(
+    md_extensions = c("+ignore_line_breaks", md_extensions),
     pandoc_args = c(
-      "--template", system_file("template", "template.md"),
       "--wrap=none",
       "--lua-filter", system_file("lua", "crossref.lua")
     ),
+    hard_line_breaks = FALSE,
     ...
   )
+
+  index_template = which(base_format$pandoc$args == "--template")
+  template = system_file("template", "template.md")
+  if (length(index_template) == 1L) {
+    base_format$pandoc$args[index_template + 1L] = template
+  } else {
+    base_format$pandoc$args = c(base_format$pandoc$args, "--template", template)
+  }
 
   knitr_options = rmarkdown::knitr_options(
     opts_chunk = list(
