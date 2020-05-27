@@ -42,8 +42,16 @@ function solve_reference(element, pattern_key, section)
 end
 
 function Meta(element)
-    if element.section then
+    if element.crossref.section then
+        section = pandoc.utils.stringify(element.crossref.section)
+    elseif element.section then
         section = pandoc.utils.stringify(element.section)
+    end
+
+    if element.crossref.labels then
+        for key, val in pairs(element.crossref.labels) do
+            labels[key] = pandoc.utils.stringify(val)
+        end
     end
 
     for k, v in pairs(labels) do
