@@ -4,7 +4,12 @@
 \alias{gihyo_document}
 \title{Gihyo Flavored Markdown}
 \usage{
-gihyo_document(md_extensions = NULL, pandoc_args = NULL, ...)
+gihyo_document(
+  md_extensions = NULL,
+  pandoc_args = NULL,
+  html_preview = TRUE,
+  ...
+)
 }
 \arguments{
 \item{md_extensions}{Markdown extensions to be added or removed from the
@@ -13,8 +18,30 @@ additional details.}
 
 \item{pandoc_args}{Additional command line options to pass to pandoc}
 
+\item{html_preview}{\code{TRUE} to also generate an HTML file for the purpose of
+locally previewing what the document will look like on GitHub.}
+
 \item{...}{Arguments passed to \code{md_document}}
 }
 \description{
-Gihyo Flavored Markdown
+This R Markdown format is based on \code{rmarkdown::github_document}.
+Main changes are
+(1) usage of custom tempalte,
+(2) line breaks are ignored instead of treated as hard line breaks,
+(3) support cross reference like bookdown,
+(4) echoes and results are styled by REPL-like format,
+(5) figures are saved under img directory
+}
+\details{
+Cross reference can be configured via YAML frontmatter.
+For example, if \verb{(#fig:foo)} should be rendered as \verb{Figure 2.1},
+then setup the YAML below. Keys for \code{labels} can be any.
+In other words, users can define original ones.\if{html}{\out{<div class="yaml">}}\preformatted{output: gihyodown::gihyo_document
+crossref:
+  section: 2
+  labels:
+    fig: "Figure "
+    tab: "Table "
+    eqn: "Equation "
+}\if{html}{\out{</div>}}
 }
