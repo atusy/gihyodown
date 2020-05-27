@@ -1,6 +1,4 @@
--- if sec is nil, then reference numbers increments throughout the document
-section = 0
---sec = nil
+section = ""
 labels = {fig = "図", tab = "表", eqn = "式"}
 
 -- Initialize counts and index
@@ -35,7 +33,7 @@ function solve_reference(element, pattern_key, section)
         end
         element.text = element.text:gsub(
             matched:gsub("([()-])", "%%%1"), -- escaping
-            label .. section .. "." .. index[type][name]
+            label .. section .. index[type][name]
         )
     end
     return(element)
@@ -43,9 +41,9 @@ end
 
 function Meta(element)
     if element.crossref and element.crossref.section then
-        section = pandoc.utils.stringify(element.crossref.section)
+        section = pandoc.utils.stringify(element.crossref.section) .. "."
     elseif element.section then
-        section = pandoc.utils.stringify(element.section)
+        section = pandoc.utils.stringify(element.section) .. "."
     end
 
     if element.crossref and element.crossref.labels then
