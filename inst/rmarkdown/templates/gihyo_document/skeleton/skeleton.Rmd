@@ -3,7 +3,9 @@ section: 3
 title: Title
 author: Author
 summary: Summary
-output: gihyodown::gihyo_document
+output:
+  gihyodown::gihyo_document:
+    html_preview: true
 ---
 
 ```{r}

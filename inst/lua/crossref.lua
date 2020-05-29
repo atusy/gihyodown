@@ -1,4 +1,11 @@
-section = ""
+-- Labels are tweeakable via meta e.g.,
+-- crossref:
+--   labels:
+--     fig: "Fig."
+--     tab: "Tab."
+--   link: true
+--   section: 0
+
 labels = {fig = "図", tab = "表", eqn = "式"}
 
 -- Initialize counts and index
@@ -10,46 +17,131 @@ patterns = {
     hash = "(%(#([%a%d-]+):([%a%d-]+)%))"
 }
 
-function solve_reference(element, pattern_key, section)
-    local pattern = patterns[pattern_key]
-    local _ = ""
-    local type = ""
-    local key = ""
-    local name = ""
-    local label = ""
+function escape_symbol(text)
+    return(text:gsub("([\\`*_{}[]()>#+-.!])", "\\%1"))
+end
 
-    for matched in element.text:gmatch(pattern) do
-        _, type, name = matched:match(pattern)
+function markdown(text)
+    return(pandoc.read(text, "markdown").blocks[1].content)
+end
 
-        if (pattern_key == "hash") then
-            label = labels[type]
-        else
-            label = ""
-        end
-
-        if index[type][name] == nil then
-            count[type] = count[type] + 1
-            index[type][name] = count[type]
-        end
-        element.text = element.text:gsub(
-            matched:gsub("([()-])", "%%%1"), -- escaping
-            label .. section .. index[type][name]
-        )
+function name_span(text, name)
+    if link then
+        return("[" .. text .. "]{#" .. name .. "}")
+    else
+        return(text)
     end
-    return(element)
+end
+
+function hyperlink(text, href)
+    if link then
+        return("[" .. text .. "](" .. href .. ")")
+    else
+        return(text)
+    end
+end
+
+function solve_hash(element)
+    local pattern = patterns["hash"]
+
+    if element.text:match(pattern) then
+        local _ = ""
+        local type = ""
+        local key = ""
+        local name = ""
+        local label = ""
+        if link then
+            element.text = escape_symbol(element.text)
+        end
+        for matched in element.text:gmatch(pattern) do
+            _, type, name = matched:match(pattern)
+
+            label = labels[type]
+
+            if index[type][name] == nil then
+                count[type] = count[type] + 1
+                if section then
+                    index[type][name] = section .. "." .. count[type]
+                else
+                    index[type][name] = "" .. count[type]
+                end
+            end
+
+            element.text = element.text:gsub(
+                matched:gsub("([()-])", "%%%1"), -- escaping
+                name_span(label .. index[type][name], type .. "-" .. name)
+            )
+        end
+        if link then
+            return(markdown(element.text))
+        else
+            return(element)
+        end
+    end
+end
+
+function Str(element)
+    local pattern = patterns["ref"]
+    if element.text:match(pattern) then
+        local _ = ""
+        local type = ""
+        local name = ""
+        if link then
+            element.text = escape_symbol(element.text)
+        end
+        for matched in element.text:gmatch(pattern) do
+            _, type, name = matched:match(pattern)
+
+            label = labels[type]
+
+            if index[type][name] then
+                ref = index[type][name]
+            else
+                ref = "??"
+            end
+
+            element.text = element.text:gsub(
+                matched:gsub("([()-])", "%%%1"), -- escaping
+                hyperlink(ref, "#" .. type .. "-" .. name)
+            )
+        end
+        if link then
+            return(markdown(element.text))
+        else
+            return(element)
+        end
+    end
+end
+
+function increment_section_and_reset_count(element)
+    if section and (element.t == "Header") and (element.level == 1) and not element.classes:find("unnumbered") then
+        section = section + 1
+        for key, value in pairs(count) do
+            count[key] = 0
+        end
+    end
 end
 
 function Meta(element)
-    if element.crossref and element.crossref.section then
-        section = pandoc.utils.stringify(element.crossref.section) .. "."
-    elseif element.section then
-        section = pandoc.utils.stringify(element.section) .. "."
-    end
-
-    if element.crossref and element.crossref.labels then
-        for key, val in pairs(element.crossref.labels) do
-            labels[key] = pandoc.utils.stringify(val)
+    if element.crossref then
+        if element.crossref.section then
+            section = tonumber(pandoc.utils.stringify(element.crossref.section))
+        else
+            section = 0
         end
+
+        if element.crossref.labels then
+            for key, val in pairs(element.crossref.labels) do
+                labels[key] = pandoc.utils.stringify(val)
+            end
+        end
+        if element.crossref.link then
+            link = element.crossref.link
+        else
+            link = false
+        end
+    elseif element.section then
+        section = tonumber(pandoc.utils.stringify(element.section))
     end
 
     for k, v in pairs(labels) do
@@ -60,13 +152,17 @@ function Meta(element)
     return(element)
 end
 
-function Str(element)
-    element = solve_reference(element, "hash", section) -- (#fig:foo)
-    element = solve_reference(element, "ref", section)  -- \@ref(fig:foo)
-    return(element)
+function Pandoc(document)
+    local hblocks = {}
+    for i,el in pairs(document.blocks) do
+        --increment_section_and_reset_count(el)
+        table.insert(hblocks, pandoc.walk_block(el, {Str = solve_hash}))
+    end
+    return(pandoc.Pandoc(hblocks, document.meta))
 end
 
 return {
   { Meta = Meta },
+  { Pandoc = Pandoc },
   { Str = Str }
 }
