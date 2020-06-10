@@ -59,11 +59,11 @@ gihyo_document <- function(
       collapse = TRUE,
       comment = ""
     ),
-    opts_hooks = list(
-      fig.cap = function(options) {
+    knit_hooks = list(
+      plot = function(x, options) {
         options$fig.cap <-
           sprintf("(#fig:%s) %s", options$label, options$fig.cap)
-        options
+        knitr::hook_plot_md(x, options)
       }
     )
   )
