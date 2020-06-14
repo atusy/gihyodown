@@ -49,7 +49,7 @@ gihyo_document <- function(
     pandoc = NULL,
     clean_supporting = FALSE,
     post_processor =
-      if (html_preview) post_processor(keep_html, gray_preview),
+      if (html_preview) post_processor(gray_preview),
     base_format = base_format
   )
 }
@@ -72,8 +72,8 @@ knitr_gihyo_options <- function() {
   )
 }
 
-post_processor <- function(keep_html, gray_preview) {
-  force(keep_html)
+post_processor <- function(gray_preview) {
+  force(gray_preview)
 
   function(metadata, input_file, output_file, clean, verbose) {
     rmarkdown::render(
