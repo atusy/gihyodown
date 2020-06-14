@@ -8,6 +8,7 @@ gihyo_document(
   md_extensions = NULL,
   pandoc_args = NULL,
   html_preview = TRUE,
+  gray_preview = TRUE,
   ...
 )
 }
@@ -20,6 +21,8 @@ additional details.}
 
 \item{html_preview}{\code{TRUE} to also generate an HTML file for the purpose of
 locally previewing what the document will look like on GitHub.}
+
+\item{gray_preview}{Whether to preview in gray scale.}
 
 \item{...}{Arguments passed to \code{md_document}}
 }
