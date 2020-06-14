@@ -45,53 +45,11 @@ gihyo_document <- function(
   )
 
   rmarkdown::output_format(
-    knitr = knitr_gihyo_options(),
+    knitr = spec_knitr_options(),
     pandoc = NULL,
     clean_supporting = FALSE,
     post_processor =
-      if (html_preview) post_processor(gray_preview),
+      if (html_preview) spec_post_processor(gray_preview),
     base_format = base_format
   )
-}
-
-knitr_gihyo_options <- function() {
-  rmarkdown::knitr_options(
-    opts_chunk = list(
-      fig.path = "img/",
-      prompt = TRUE,
-      collapse = TRUE,
-      comment = ""
-    ),
-    knit_hooks = list(
-      plot = function(x, options) {
-        options$fig.cap <-
-          sprintf("(#fig:%s) %s", options$label, options$fig.cap)
-        knitr::hook_plot_md(x, options)
-      }
-    )
-  )
-}
-
-post_processor <- function(gray_preview) {
-  force(gray_preview)
-
-  function(metadata, input_file, output_file, clean, verbose) {
-    rmarkdown::render(
-      output_file,
-      output_format = rmarkdown::html_document(
-        highlight = if (gray_preview) "monochrome" else "default",
-        css = if (gray_preview) system_file("css", "html-preview.css"),
-        pandoc_args = c(
-          "--metadata", sprintf('title="%s"', metadata$title)
-        )
-      ),
-      output_file = xfun::with_ext(output_file, "html")
-    )
-
-    output_file
-  }
-}
-
-system_file <- function(..., package = "gihyodown") {
-  system.file(..., package = package)
 }
