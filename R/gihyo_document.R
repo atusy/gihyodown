@@ -24,35 +24,38 @@
 #' ```
 #'
 #' @inheritParams rmarkdown::github_document
+#' @param gray_preview Whether to preview in gray scale.
 #' @param ... Arguments passed to `md_document`
 #' @export
 gihyo_document <- function(
                            md_extensions = NULL,
                            pandoc_args = NULL,
                            html_preview = TRUE,
+                           gray_preview = TRUE,
                            ...) {
-  base_format <- rmarkdown::github_document(
+  base_format <- rmarkdown::md_document(
     md_extensions = c("+ignore_line_breaks", md_extensions),
     pandoc_args = c(
       "--wrap=none",
-      "--lua-filter", system_file("lua", "crossref.lua")
+      "--lua-filter", system_file("lua", "crossref.lua"),
+      "--template", system_file("template", "template.md")
     ),
-    hard_line_breaks = FALSE,
-    html_preview = TRUE,
+    variant = "gfm",
     ...
   )
 
-  # substitute template
-  index_template <- which(base_format$pandoc$args == "--template")
-  template <- system_file("template", "template.md")
-  if (length(index_template) == 1L) {
-    base_format$pandoc$args[index_template + 1L] <- template
-  } else {
-    base_format$pandoc$args <-
-      c(base_format$pandoc$args, "--template", template)
-  }
+  rmarkdown::output_format(
+    knitr = knitr_gihyo_options(),
+    pandoc = NULL,
+    clean_supporting = FALSE,
+    post_processor =
+      if (html_preview) post_processor(keep_html, gray_preview),
+    base_format = base_format
+  )
+}
 
-  knitr <- rmarkdown::knitr_options(
+knitr_gihyo_options <- function() {
+  rmarkdown::knitr_options(
     opts_chunk = list(
       fig.path = "img/",
       prompt = TRUE,
@@ -67,13 +70,23 @@ gihyo_document <- function(
       }
     )
   )
+}
 
-  rmarkdown::output_format(
-    knitr = knitr,
-    pandoc = NULL,
-    clean_supporting = FALSE,
-    base_format = base_format
-  )
+post_processor <- function(keep_html, gray_preview) {
+  force(keep_html)
+
+  function(metadata, input_file, output_file, clean, verbose) {
+    rmarkdown::render(
+      output_file,
+      output_format = rmarkdown::html_document(
+        highlight = if (gray_preview) "monochrome" else "default",
+        css = if (gray_preview) system_file("css", "html-preview.css")
+      ),
+      output_file = xfun::with_ext(output_file, "html")
+    )
+
+    output_file
+  }
 }
 
 system_file <- function(..., package = "gihyodown") {
