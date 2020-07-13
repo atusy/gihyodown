@@ -9,7 +9,7 @@ spec_post_processor <- function(gray_preview) {
         "--metadata", sprintf('title="%s"', metadata$title)
       )
     )
-    preview_format$pandoc$from <- "gfm"
+
     rmarkdown::render(
       output_file,
       output_format = preview_format,
