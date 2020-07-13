@@ -6,7 +6,8 @@ spec_post_processor <- function(gray_preview) {
       highlight = if (gray_preview) "monochrome" else "default",
       css = if (gray_preview) system_file("css", "html-preview.css"),
       pandoc_args = c(
-        "--metadata", sprintf('title="%s"', metadata$title), "--mathjax"
+        "--metadata", sprintf('title="%s"', metadata$title), "--mathjax",
+        "--lua-filter", system_file("lua", "crossref.lua")
       )
     )
 
