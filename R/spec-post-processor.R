@@ -7,7 +7,9 @@ spec_post_processor <- function(gray_preview) {
       css = if (gray_preview) system_file("css", "html-preview.css"),
       pandoc_args = c(
         "--metadata", sprintf('title="%s"', metadata$title)
-      )
+      ),
+      includes = list(in_header = system.file(package = 'gihyodown', 'html', 'katex.html')),
+      math = NULL
     )
 
     rmarkdown::render(
