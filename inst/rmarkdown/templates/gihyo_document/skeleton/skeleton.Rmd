@@ -8,15 +8,21 @@ output:
     html_preview: true
 ---
 
+# print
+
 ```{r}
 print("foo")
 ```
 
+# figure
+
 図\@ref(fig:iris)はあやめの図です。
 
 ```{r iris, fig.cap="foo"}
-plot(iris)
+plot(iris, col = iris$Species)
 ```
+
+# table
 
 表\@ref(tab:iris)はあやめのデータです。
 

@@ -49,7 +49,12 @@ gihyo_document <- function(
     pandoc = NULL,
     clean_supporting = FALSE,
     post_processor =
-      if (html_preview) spec_post_processor(gray_preview),
+      if (!isFALSE(html_preview)) {
+        spec_post_processor(
+          gray_preview,
+          if (is.list(html_preview)) html_preview else list()
+        )
+      },
     base_format = base_format
   )
 }
