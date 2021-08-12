@@ -6,6 +6,7 @@ spec_knitr_options <- function() {
       collapse = FALSE,
       comment = "",
       class.output = "result",
+      class.message = "result",
       class.warning = "result",
       class.error = "result",
       R.options = list(
