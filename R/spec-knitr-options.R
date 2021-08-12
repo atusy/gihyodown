@@ -2,9 +2,15 @@ spec_knitr_options <- function() {
   rmarkdown::knitr_options(
     opts_chunk = list(
       fig.path = "img/",
-      prompt = TRUE,
-      collapse = TRUE,
-      comment = ""
+      prompt = FALSE,
+      collapse = FALSE,
+      comment = "",
+      class.output = "result",
+      class.warning = "result",
+      class.error = "result",
+      R.options = list(
+        width = 72
+      )
     ),
     knit_hooks = list(
       plot = function(x, options) {

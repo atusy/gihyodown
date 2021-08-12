@@ -4,14 +4,14 @@ html_preview <- function(
   css = NULL,
   toc = TRUE,
   pandoc_args = c(
-    "--metadata", sprintf('title="%s"', metadata$title), "--mathjax",
+    "--metadata", sprintf('title="%s"', rmarkdown::metadata$title), "--mathjax",
     "--lua-filter", system_file("lua", "crossref.lua")
   ),
   ...
 ) {
   rmarkdown::html_document(
     highlight = highlight,
-    css = c(css, if(gray_preview) system_file("css", "html-preview.css"),
+    css = c(css, if (gray_preview) system_file("css", "html-preview.css")),
     toc = toc, pandoc_args = pandoc_args, ...
   )
 }
