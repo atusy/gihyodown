@@ -38,6 +38,7 @@ gihyo_document <- function(
     pandoc_args = c(
       "--wrap=none",
       "--lua-filter", system_file("lua", "crossref.lua"),
+      "--lua-filter", system_file("lua", "caption.lua"),
       "--template", system_file("template", "template.md")
     ),
     variant = "gfm",
