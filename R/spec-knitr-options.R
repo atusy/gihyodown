@@ -2,6 +2,7 @@ spec_knitr_options <- function() {
   rmarkdown::knitr_options(
     opts_chunk = list(
       fig.path = "img/",
+      dpi = 300,
       prompt = FALSE,
       collapse = FALSE,
       comment = "",
