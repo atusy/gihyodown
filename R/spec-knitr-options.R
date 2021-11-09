@@ -18,7 +18,7 @@ spec_knitr_options <- function() {
       plot = function(x, options) {
         options$fig.cap <-
           sprintf("(#fig:%s) %s", options$label, options$fig.cap)
-        knitr::hook_plot_md(x, options)
+        knitr:::hook_plot_md_pandoc(x, options)
       }
     )
   )
