@@ -3,13 +3,9 @@
 
 ## Installation
 
-1. Setup Personal Access Token (cf. <https://usethis.r-lib.org/articles/articles/usethis-setup.html#get-and-store-a-github-personal-access-token-1>)
-
-2. Run
-
-   ``` r
-   remotes::install_github("atusy/gihyodown")
-   ```
+``` r
+remotes::install_github("atusy/gihyodown")
+```
 
 ## Example
 
@@ -22,6 +18,8 @@ title: Title
 author: Author
 summary: Summary
 output: gihyodown::gihyo_document
+crossref:
+  section: 2 # This will prepend section number to figure/table numbers (e.g., 図2.1)
 ---
 ```
 
