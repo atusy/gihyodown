@@ -18,13 +18,15 @@ style_pandoc <- function(input, output, ...) {
 
 style_gfm_one <- function(path, ...) {
   md <- tempfile(fileext = ".Rmd")
+  file.copy(path, md, overwrite = TRUE)
   style_pandoc(
-    path, md,
+    md, md,
     "--lua-filter", system_file("lua", "chunkify.lua")
   )
   styler::style_file(md, ...)
   style_pandoc(
-    md, path,
+    md, md,
     "--lua-filter", system_file("lua", "unchunkify.lua")
   )
+  file.copy(md, path, overwrite = TRUE)
 }
