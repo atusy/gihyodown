@@ -1,4 +1,3 @@
-
 # gihyodown
 
 ## Installation
@@ -11,7 +10,7 @@ remotes::install_github("atusy/gihyodown")
 
 Write YAML front matter with following variables.
 
-```yaml
+``` yaml
 ---
 section: 1
 title: Title
@@ -20,4 +19,3 @@ summary: Summary
 output: gihyodown::gihyo_document
 ---
 ```
-

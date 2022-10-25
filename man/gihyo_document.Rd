@@ -14,7 +14,7 @@ gihyo_document(
 }
 \arguments{
 \item{md_extensions}{Markdown extensions to be added or removed from the
-default definition or R Markdown. See the \code{\link[rmarkdown]{rmarkdown_format}} for
+default definition of R Markdown. See the \code{\link[rmarkdown]{rmarkdown_format}} for
 additional details.}
 
 \item{pandoc_args}{Additional command line options to pass to pandoc}
@@ -39,7 +39,9 @@ Main changes are
 Cross reference can be configured via YAML frontmatter.
 For example, if \verb{(#fig:foo)} should be rendered as \verb{Figure 2.1},
 then setup the YAML below. Keys for \code{labels} can be any.
-In other words, users can define original ones.\if{html}{\out{<div class="yaml">}}\preformatted{output: gihyodown::gihyo_document
+In other words, users can define original ones.
+
+\if{html}{\out{<div class="sourceCode yaml">}}\preformatted{output: gihyodown::gihyo_document
 crossref:
   section: 2
   labels:
