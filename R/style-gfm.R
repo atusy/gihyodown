@@ -25,7 +25,7 @@ style_gfm_one <- function(path, ...) {
     path, md,
     "--lua-filter", system_file("lua", "chunkify.lua")
   )
-  styler::style_file(md)
+  styler::style_file(md, ...)
   style_pandoc(
     md, md,
     "--lua-filter", system_file("lua", "unchunkify.lua"),
