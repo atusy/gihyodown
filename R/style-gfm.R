@@ -24,8 +24,7 @@ style_gfm_one <- function(path, ...) {
   )
   styler::style_file(md, ...)
   style_pandoc(
-    md, md,
-    "--lua-filter", system_file("lua", "unchunkify.lua"),
+    md, path,
+    "--lua-filter", system_file("lua", "unchunkify.lua")
   )
-  file.copy(md, path, overwrite = TRUE)
 }
