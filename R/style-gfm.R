@@ -12,10 +12,7 @@ style_gfm <- function(path, ...) {
 style_pandoc <- function(input, output, ...) {
   rmarkdown::pandoc_convert(
     input, to = "gfm", from = "gfm", output = output,
-    options = c(
-      ...,
-      "--wrap=none"
-    )
+    options = c(..., "--wrap=none")
   )
 }
 
